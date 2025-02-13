@@ -25,8 +25,7 @@ public class CategoryController {
     @PostMapping("/admin/category/create")
     public ResponseEntity<Response<?>> createCategory(@RequestBody CategoryRequest request) {
         Categories categories = categoryService.createCategory(request);
-        if (categories != null) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(
+        return ResponseEntity.status(HttpStatus.CREATED).body(
                     Response.builder()
                             .httpStatus(HttpStatus.CREATED)
                             .message("Created Category Successfully")
@@ -34,24 +33,13 @@ public class CategoryController {
                             .timestamp(LocalDateTime.now())
                             .build()
             );
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    Response.builder()
-                            .httpStatus(HttpStatus.BAD_REQUEST)
-                            .message("Category already exists")
-                            .result(null)
-                            .timestamp(LocalDateTime.now())
-                            .build()
-            );
-        }
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/admin/category/update/{categoryID}")
     public ResponseEntity<Response<?>> updateCategory(@PathVariable String categoryID, @RequestBody CategoryRequest request) {
         Categories updatedCategory = categoryService.updateCategory(categoryID, request);
-        if (updatedCategory != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(
+        return ResponseEntity.status(HttpStatus.OK).body(
                     Response.builder()
                             .httpStatus(HttpStatus.OK)
                             .message("ok")
@@ -59,68 +47,38 @@ public class CategoryController {
                             .timestamp(LocalDateTime.now())
                             .build()
             );
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    Response.builder()
-                            .httpStatus(HttpStatus.NOT_FOUND)
-                            .message("Category not found")
-                            .timestamp(LocalDateTime.now())
-                            .build()
-            );
-        }
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/admin/category/delete-by-id/{categoryID}")
     public ResponseEntity<Response<?>> deleteByID(@PathVariable String categoryID) {
-        boolean success = categoryService.deleteCategoryByCategoryID(categoryID);
-        if (success) {
-            return ResponseEntity.status(HttpStatus.OK).body(
+        categoryService.deleteCategoryByCategoryID(categoryID);
+        return ResponseEntity.status(HttpStatus.OK).body(
                     Response.builder()
                             .httpStatus(HttpStatus.OK)
                             .message("ok")
                             .timestamp(LocalDateTime.now())
                             .build()
             );
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    Response.builder()
-                            .httpStatus(HttpStatus.NOT_FOUND)
-                            .message("Category not found")
-                            .timestamp(LocalDateTime.now())
-                            .build()
-            );
-        }
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/admin/category/delete-by-name/{categoryName}")
     public ResponseEntity<Response<?>> deleteByName(@PathVariable String categoryName) {
-        boolean success = categoryService.deleteCategoryByCategoryName(categoryName);
-        if (success) {
-            return ResponseEntity.status(HttpStatus.OK).body(
+        categoryService.deleteCategoryByCategoryName(categoryName);
+        return ResponseEntity.status(HttpStatus.OK).body(
                     Response.builder()
                             .httpStatus(HttpStatus.OK)
                             .message("ok")
                             .timestamp(LocalDateTime.now())
                             .build()
             );
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    Response.builder()
-                            .httpStatus(HttpStatus.NOT_FOUND)
-                            .message("Category not found")
-                            .timestamp(LocalDateTime.now())
-                            .build()
-            );
-        }
     }
 
     @GetMapping("/category/get-by-name/{categoryName}")
     public ResponseEntity<Response<?>> getByName(@PathVariable String categoryName) {
-        Optional<Categories> category = categoryService.getByCategoryName(categoryName);
-        if (category.isPresent()) {
-            return ResponseEntity.status(HttpStatus.OK).body(
+        Categories category = categoryService.getByCategoryName(categoryName);
+        return ResponseEntity.status(HttpStatus.OK).body(
                     Response.builder()
                             .httpStatus(HttpStatus.OK)
                             .message("ok")
@@ -128,23 +86,13 @@ public class CategoryController {
                             .timestamp(LocalDateTime.now())
                             .build()
             );
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    Response.builder()
-                            .httpStatus(HttpStatus.BAD_REQUEST)
-                            .message("Category not found")
-                            .result(null)
-                            .timestamp(LocalDateTime.now())
-                            .build()
-            );
-        }
+
     }
 
     @GetMapping("/category/get-all-categories")
     public ResponseEntity<Response<?>> getAllCategories() {
         List<Categories> categories = categoryService.getAllCategories();
-        if (!categories.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.OK).body(
+        return ResponseEntity.status(HttpStatus.OK).body(
                     Response.builder()
                             .httpStatus(HttpStatus.OK)
                             .message("ok")
@@ -152,15 +100,5 @@ public class CategoryController {
                             .timestamp(LocalDateTime.now())
                             .build()
             );
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    Response.builder()
-                            .httpStatus(HttpStatus.BAD_REQUEST)
-                            .message("No categories found")
-                            .result(null)
-                            .timestamp(LocalDateTime.now())
-                            .build()
-            );
-        }
     }
 }

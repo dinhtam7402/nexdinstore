@@ -7,11 +7,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ICategoryService {
-    Optional<Categories> getByCategoryName(String categoryName);
+    Categories getByCategoryName(String categoryName);
     List<Categories> getAllCategories();
+    boolean existsByCategoryID(String categoryID);
     boolean existsByCategoryName(String categoryName);
     Categories createCategory(CategoryRequest request);
     Categories updateCategory(String categoryID, CategoryRequest request);
-    boolean deleteCategoryByCategoryID(String categoryID);
-    boolean deleteCategoryByCategoryName(String categoryName);
+    void deleteCategoryByCategoryID(String categoryID);
+    void deleteCategoryByCategoryName(String categoryName);
 }

@@ -19,15 +19,12 @@ public class CategoryService implements ICategoryService {
     private ICategoryRepository categoryRepository;
 
     @Override
-    public Optional<Categories> getByCategoryName(String categoryName) {
-        Optional<Categories> category = categoryRepository.findByCategoryName(categoryName);
-        if (category.isPresent()) {
-            log.info("Category found: {}", category);
-        } else {
-            log.warn("Category not found for name: {}", categoryName);
-        }
-
-        return category;
+    public Categories getByCategoryName(String categoryName) {
+        return categoryRepository.findByCategoryName(categoryName)
+                .orElseThrow(() -> {
+                    log.warn("Category '{}' not found", categoryName);
+                    return new IllegalArgumentException("Category does not exist: " + categoryName);
+                });
     }
 
     @Override
@@ -35,6 +32,11 @@ public class CategoryService implements ICategoryService {
         List<Categories> categories = categoryRepository.findAll();
         log.info("Total categories fetched: {}", categories.size());
         return categories;
+    }
+
+    @Override
+    public boolean existsByCategoryID(String categoryID) {
+        return categoryRepository.existsById(categoryID);
     }
 
     @Override
@@ -83,30 +85,21 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public boolean deleteCategoryByCategoryID(String categoryID) {
+    public void deleteCategoryByCategoryID(String categoryID) {
         Optional<Categories> optionalCategory = categoryRepository.findById(categoryID);
 
         if (optionalCategory.isPresent()) {
             categoryRepository.deleteById(categoryID);
             log.info("Category with ID: {} successfully deleted.", categoryID);
-            return true;
         } else {
             log.warn("Category with ID: {} not found. Deletion failed.", categoryID);
-            return false;
         }
     }
 
     @Override
-    public boolean deleteCategoryByCategoryName(String categoryName) {
-        Optional<Categories> optionalCategory = categoryRepository.findByCategoryName(categoryName);
-        if (optionalCategory.isPresent()) {
-            String categoryID = optionalCategory.get().getCategoryID();
-            categoryRepository.deleteById(categoryID);
-            log.info("Category '{}' with ID: {} successfully deleted.", categoryName, categoryID);
-            return true;
-        } else {
-            log.warn("Category '{}' not found. Deletion failed.", categoryName);
-            return false;
-        }
+    public void deleteCategoryByCategoryName(String categoryName) {
+        Categories category = getByCategoryName(categoryName);
+        categoryRepository.delete(category);
+        log.info("Category '{}' with ID: {} successfully deleted.", categoryName, category.getCategoryID());
     }
 }
