@@ -1,6 +1,7 @@
 package com.nexdin.nexdinstore.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.nexdin.nexdinstore.domain.enums.EVoucher;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -37,5 +38,6 @@ public class Vouchers {
     private int usedCount;
 
     @OneToMany(mappedBy = "voucher")
+    @JsonManagedReference
     private List<Orders> orders;
 }
