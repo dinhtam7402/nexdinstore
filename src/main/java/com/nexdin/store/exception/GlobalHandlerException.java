@@ -14,6 +14,16 @@ import java.util.Map;
 
 @ControllerAdvice
 public class GlobalHandlerException {
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Error<?>> handleIllegalArgumentException(IllegalArgumentException exception) {
+        return ResponseEntity.badRequest().body(new Error<>(
+                400,
+                LocalDateTime.now(),
+                exception.getMessage(),
+                null
+        ));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Error<?>> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         Map<String, String> errors = new HashMap<>();
