@@ -23,17 +23,25 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     private final ClientOrderDetailMapper clientOrderDetailMapper;
 
     @Override
-    public List<ClientOrderDetail> saveOrderDetail(Map<Integer, Integer> products, Orders orders) {
-        List<ClientOrderDetail> orderDetails = new ArrayList<>();
+    public List<OrderDetail> saveOrderDetail(Map<Integer, Integer> products) {
+        List<OrderDetail> orderDetails = new ArrayList<>();
 
         products.forEach((productVariantId, quantity) -> {
             ProductVariant productVariant = productVariantService.getAndLockById(productVariantId);
             if (productVariant.getQuantity() < quantity || quantity <= 0) throw new IllegalArgumentException("Product " + productVariant.getId() + " is not enough in stock");
-            OrderDetail orderDetail = orderDetailRepository.save(new OrderDetail(orders, productVariant, quantity, productVariant.getProduct().getPrice()));
-            orderDetails.add(clientOrderDetailMapper.entityToResponse(orderDetail));
+            OrderDetail orderDetail = orderDetailRepository.save(new OrderDetail(null, productVariant, quantity, productVariant.getProduct().getPrice()));
+            orderDetails.add(orderDetail);
             productVariantService.setQuantity(productVariant, quantity);
         });
 
         return orderDetails;
+    }
+
+    @Override
+    public void linkAndSaveDetails(List<OrderDetail> orderDetails, Orders orders) {
+        orderDetails.forEach(orderDetail -> {
+            orderDetail.setOrders(orders);
+            orderDetailRepository.save(orderDetail);
+        });
     }
 }

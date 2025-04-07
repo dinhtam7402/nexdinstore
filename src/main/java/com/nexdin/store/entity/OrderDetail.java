@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class OrderDetail extends BaseEntity {
     @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "order_id")
     private Orders orders;
     @ManyToOne
     @JoinColumn(name = "product_variant_id", nullable = false)

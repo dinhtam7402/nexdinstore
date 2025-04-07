@@ -5,6 +5,7 @@ import com.nexdin.store.entity.OrderDetail;
 import com.nexdin.store.entity.Orders;
 import com.nexdin.store.entity.enums.OrderStatus;
 import com.nexdin.store.mapper.ClientInfoMapper;
+import com.nexdin.store.mapper.ClientOrderDetailMapper;
 import com.nexdin.store.payload.request.ClientOrderRequest;
 import com.nexdin.store.payload.response.ClientInfoResponse;
 import com.nexdin.store.payload.response.ClientOrderDetail;
@@ -25,28 +26,29 @@ public class OrderServiceImpl implements OrderService {
     private final CustomerService customerService;
     private final OrderRepository orderRepository;
     private final OrderDetailService orderDetailService;
-    private final ClientInfoMapper mapper;
+    private final ClientInfoMapper clientInfoMapper;
+    private final ClientOrderDetailMapper clientOrderDetailMapper;
 
     @Override
     @Transactional
     public ClientOrderResponse placeOrder(ClientOrderRequest request) {
-        Orders orders = orderRepository.save(new Orders());
-
         // Kiểm tra số lượng sản phẩm có đủ không và Lưu thông tin chi tiết đặt hàng
-        List<ClientOrderDetail> orderDetails = orderDetailService.saveOrderDetail(request.getProduct(), orders);
-        int totalPrice = orderDetails.stream().mapToInt(ClientOrderDetail::getPrice).sum();
+        List<OrderDetail> orderDetails = orderDetailService.saveOrderDetail(request.getProduct());
 
-        orders.setTotalPrice(totalPrice);
-        orders.setStatus(OrderStatus.PENDING);
+        int totalPrice = orderDetails.stream().mapToInt(OrderDetail::getPrice).sum();
 
         // Lưu thông tin khách hàng
         Customer customer = customerService.saveCustomerOrder(request.getCustomer());
+
+        Orders orders = new Orders();
+        orders.setStatus(OrderStatus.PENDING);
+        orders.setTotalPrice(totalPrice);
         orders.setCustomer(customer);
-        ClientInfoResponse infoResponse = mapper.entityToResponse(customer);
+        orderRepository.save(orders);
 
-        // Lưu thông tin đặt hàng (Thành công)
-        orders = orderRepository.save(orders);
+        orderDetailService.linkAndSaveDetails(orderDetails, orders);
 
-        return new ClientOrderResponse(orders.getId(), infoResponse, orders.getTotalPrice(), orderDetails);
+        ClientInfoResponse infoResponse = clientInfoMapper.entityToResponse(customer);
+        return new ClientOrderResponse(orders.getId(), infoResponse, orders.getTotalPrice(), clientOrderDetailMapper.entityToResponse(orderDetails));
     }
 }
