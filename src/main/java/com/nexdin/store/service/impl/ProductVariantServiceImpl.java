@@ -1,35 +1,35 @@
 package com.nexdin.store.service.impl;
 
-import com.nexdin.store.constant.FieldName;
-import com.nexdin.store.constant.ResourceName;
 import com.nexdin.store.entity.ProductVariant;
-import com.nexdin.store.exception.ResourceNotFoundException;
-import com.nexdin.store.repository.ProductRepository;
 import com.nexdin.store.repository.ProductVariantRepository;
 import com.nexdin.store.service.ProductVariantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class ProductVariantServiceImpl implements ProductVariantService {
-    private final ProductVariantRepository repository;
-    private final ProductRepository productRepository;
+    private final ProductVariantRepository productVariantRepository;
 
     @Override
-    public ProductVariant getAndLockById(Integer productId) {
-        ProductVariant productVariant = repository.findAndLockById(productId);
-        if (productVariant == null) throw new ResourceNotFoundException(ResourceName.PRODUCT_VARIANT, FieldName.ID, productId);
-        return productVariant;
-    }
+    public List<ProductVariant> reserveProductVariants(Map<Integer, Integer> products) {
+        List<ProductVariant> productVariants = new ArrayList<>();
 
-    @Override
-    public Integer getPrice(Integer productId) {
-        return productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException(ResourceName.PRODUCT, FieldName.ID, productId)).getPrice();
-    }
+        products.forEach((productVariantId, quantity) -> {
+            ProductVariant productVariant = productVariantRepository.findAndLockById(productVariantId);
 
-    @Override
-    public void setQuantity(ProductVariant productVariant, Integer quantity) {
-        productVariant.setQuantity(productVariant.getQuantity() - quantity);
+            if (productVariant.getQuantity() < quantity || quantity <= 0) {
+                throw new IllegalArgumentException("Not enough stock for product variant " + productVariantId);
+            }
+
+            productVariant.setQuantity(productVariant.getQuantity() - quantity);
+            productVariants.add(productVariant);
+        });
+
+        return productVariants;
     }
 }

@@ -1,10 +1,10 @@
 package com.nexdin.store.service;
 
-import com.nexdin.store.entity.Product;
 import com.nexdin.store.entity.ProductVariant;
 
+import java.util.List;
+import java.util.Map;
+
 public interface ProductVariantService {
-    void setQuantity(ProductVariant productVariant, Integer quantity);
-    ProductVariant getAndLockById(Integer productId);
-    Integer getPrice(Integer productId);
+    List<ProductVariant> reserveProductVariants(Map<Integer, Integer> products);
 }

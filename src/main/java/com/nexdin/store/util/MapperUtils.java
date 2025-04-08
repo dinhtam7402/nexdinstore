@@ -43,6 +43,8 @@ public abstract class MapperUtils {
 
     public PaymentType mapStringToPaymentType(String type) {return EnumUtils.findEnumInsensitiveCase(PaymentType.class, type);}
 
+    public String mapPaymentTypeToString(PaymentType type) {return type.name();}
+
     public LocalDate mapStringToLocalDate(String expiry) {
         String[] parts = expiry.split("/");
         int year = Integer.parseInt(parts[0]);

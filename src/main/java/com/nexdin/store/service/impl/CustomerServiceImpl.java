@@ -1,9 +1,8 @@
 package com.nexdin.store.service.impl;
 
 import com.nexdin.store.entity.Customer;
-import com.nexdin.store.mapper.ClientInfoMapper;
-import com.nexdin.store.payload.request.ClientInfoRequest;
-import com.nexdin.store.payload.response.ClientInfoResponse;
+import com.nexdin.store.mapper.client.ClientInfoMapper;
+import com.nexdin.store.payload.request.client.ClientInfoRequest;
 import com.nexdin.store.repository.CustomerRepository;
 import com.nexdin.store.service.CustomerService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final ClientInfoMapper mapper;
 
     @Override
-    public Customer saveCustomerOrder(ClientInfoRequest request) {
+    public Customer createGuestCustomer(ClientInfoRequest request) {
         return customerRepository.save(mapper.requestToEntity(request));
     }
 }

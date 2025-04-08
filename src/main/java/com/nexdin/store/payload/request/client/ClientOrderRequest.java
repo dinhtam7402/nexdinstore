@@ -1,4 +1,4 @@
-package com.nexdin.store.payload.request;
+package com.nexdin.store.payload.request.client;
 
 import lombok.Data;
 
@@ -13,4 +13,5 @@ public class ClientOrderRequest {
     * */
     private Map<Integer, Integer> product;
     private ClientInfoRequest customer;
+    private String type;
 }

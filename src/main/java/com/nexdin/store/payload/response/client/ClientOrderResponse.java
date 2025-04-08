@@ -1,5 +1,6 @@
-package com.nexdin.store.payload.response;
+package com.nexdin.store.payload.response.client;
 
+import com.nexdin.store.entity.enums.PaymentType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -10,6 +11,7 @@ import java.util.List;
 public class ClientOrderResponse {
     private Integer id;
     private ClientInfoResponse customer;
+    private PaymentType type;
     private Integer totalPrice;
-    private List<ClientOrderDetail> details;
+    private List<ClientOrderDetailResponse> orderDetails;
 }

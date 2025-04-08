@@ -1,4 +1,4 @@
-package com.nexdin.store.payload.response;
+package com.nexdin.store.payload.response.client;
 
 import lombok.Data;
 

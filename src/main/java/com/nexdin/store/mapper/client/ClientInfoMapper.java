@@ -1,8 +1,9 @@
-package com.nexdin.store.mapper;
+package com.nexdin.store.mapper.client;
 
 import com.nexdin.store.entity.Customer;
-import com.nexdin.store.payload.request.ClientInfoRequest;
-import com.nexdin.store.payload.response.ClientInfoResponse;
+import com.nexdin.store.mapper.GenericMapper;
+import com.nexdin.store.payload.request.client.ClientInfoRequest;
+import com.nexdin.store.payload.response.client.ClientInfoResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;

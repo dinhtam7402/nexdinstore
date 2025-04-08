@@ -1,4 +1,4 @@
-package com.nexdin.store.payload.request;
+package com.nexdin.store.payload.request.client;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

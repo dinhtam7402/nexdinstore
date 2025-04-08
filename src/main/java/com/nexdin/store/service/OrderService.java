@@ -1,8 +1,8 @@
 package com.nexdin.store.service;
 
-import com.nexdin.store.payload.request.ClientOrderRequest;
-import com.nexdin.store.payload.response.ClientOrderResponse;
+import com.nexdin.store.entity.Orders;
+import com.nexdin.store.payload.request.client.ClientOrderRequest;
 
 public interface OrderService {
-    ClientOrderResponse placeOrder(ClientOrderRequest request);
+    Orders placeOrder(ClientOrderRequest request);
 }
