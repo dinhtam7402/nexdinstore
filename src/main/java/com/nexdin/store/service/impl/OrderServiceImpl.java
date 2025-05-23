@@ -4,13 +4,13 @@ import com.nexdin.store.entity.Customer;
 import com.nexdin.store.entity.OrderDetail;
 import com.nexdin.store.entity.Orders;
 import com.nexdin.store.entity.ProductVariant;
+import com.nexdin.store.entity.enums.OrderStatus;
 import com.nexdin.store.entity.enums.PaymentType;
 import com.nexdin.store.payload.request.client.ClientOrderRequest;
 import com.nexdin.store.repository.OrderRepository;
 import com.nexdin.store.service.CustomerService;
 import com.nexdin.store.service.OrderService;
 import com.nexdin.store.service.ProductVariantService;
-import com.nexdin.store.service.payment.PaymentStrategyFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +26,6 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final ProductVariantService productVariantService;
     private final CustomerService customerService;
-    private final PaymentStrategyFactory paymentStrategyFactory;
 
     @Override
     @Transactional
@@ -47,8 +46,7 @@ public class OrderServiceImpl implements OrderService {
         orders.setType(type);
         orders.setTotalPrice(totalPrice);
         orders.setOrderDetails(orderDetails);
-
-        paymentStrategyFactory.getStrategy(type).pay(orders);
+        orders.setStatus(OrderStatus.PENDING);
 
         return orderRepository.save(orders);
     }
